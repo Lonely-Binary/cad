@@ -1,0 +1,36 @@
+name: Release
+
+# Pushing a tag named <slug>-v<version> publishes that product's files as a
+# GitHub Release. The tag must point at a commit whose <slug>/VERSION matches.
+on:
+  push:
+    tags: ["*-v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Package
+        run: scripts/package.sh "$GITHUB_REF_NAME" dist
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="$GITHUB_REF_NAME"
+          slug="${tag%-v*}"
+          version="${tag##*-v}"
+          {
+            echo "Files for **$slug**, board revision **v$version**."
+            echo
+            echo "STEP and DXF are zipped. Link to these files by this tag; the URL never changes."
+          } > notes.md
+          gh release create "$tag" dist/"$tag"/* \
+            --verify-tag \
+            --title "$slug v$version" \
+            --notes-file notes.md

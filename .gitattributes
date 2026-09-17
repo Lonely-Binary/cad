@@ -1,0 +1,7 @@
+# STEP and DXF are text, but tens of megabytes of machine-written coordinates:
+# never diff them, never rewrite their line endings.
+*.step binary
+*.dxf  binary
+*.glb  binary
+*.pdf  binary
+*.png  binary

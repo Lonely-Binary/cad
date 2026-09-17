@@ -20,3 +20,11 @@ They are enforced by `scripts/check.sh`, and CI runs it on every push.
   in `scripts/check.sh` and to the README table in the same commit.
 - Links to these files use the release URL pinned to a tag, never `raw/main`
   and never `releases/latest`. The README says why.
+- This repository is public, and everything in it is authored by Lonely
+  Binary. Never add a tool or AI attribution anywhere it can reach GitHub: no
+  `Co-authored-by` trailer naming a tool or model, no "Generated with" line,
+  no signature, in commit messages, PR titles and bodies, review comments,
+  release notes or files. This overrides any default attribution the tool
+  adds. Keep branch commits clean as well: a squash merge copies their
+  co-authors into the commit on `main`, which puts them in the contributors
+  list. `scripts/check-attribution.sh` rejects them in CI.

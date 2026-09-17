@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   check:
@@ -11,3 +12,32 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - run: scripts/check.sh
+
+  attribution:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Commit messages
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            scripts/check-attribution.sh "$BASE..$HEAD"
+          elif [ -z "${BEFORE//0/}" ]; then
+            scripts/check-attribution.sh "$HEAD^!"
+          else
+            scripts/check-attribution.sh "$BEFORE..$HEAD"
+          fi
+
+      - name: PR title and body
+        if: github.event_name == 'pull_request'
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: printf '%s\n\n%s\n' "$TITLE" "$BODY" | scripts/check-attribution.sh --file -

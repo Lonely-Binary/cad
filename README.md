@@ -164,9 +164,6 @@ writes to `dist/`, which is ignored.
 edit a release's assets by hand, because a link on the website may already
 point at them. A wrong file is fixed by a new version, usually a `PATCH`.
 
-The first three releases also carry `-top.png`, `-bottom.png` and
-`-line-art.png`. Nothing uses them, and no later release has them.
-
 ## Linking from the website
 
 Link to a release asset, pinned to its tag:
